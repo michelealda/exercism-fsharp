@@ -1,6 +1,6 @@
 ﻿module DotDsl
 
-type Element =
+type Kind =
     | Attr of (string * string)
     | Node of string * (string * string) list
     | Edge of string * string * (string * string) list
@@ -13,23 +13,22 @@ let node key attrs = Node(key, attrs)
 
 let edge left right attrs = Edge(left, right, attrs)
 
+let extract fn = List.choose fn
+
 let attrs graph =
-    graph
-    |> List.choose (fun e ->
+    extract (fun e ->
         match e with
         | Attr _ -> Some e
-        | _ -> None)
+        | _ -> None) graph
 
 let nodes graph =
-    graph
-    |> List.choose (fun e ->
+    extract (fun e ->
         match e with
         | Node _ -> Some e
-        | _ -> None)
+        | _ -> None) graph
 
 let edges graph =
-    graph
-    |> List.choose (fun e ->
+    extract (fun e ->
         match e with
         | Edge _ -> Some e
-        | _ -> None)
+        | _ -> None) graph
